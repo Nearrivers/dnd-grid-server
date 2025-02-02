@@ -10,4 +10,5 @@ func BookRouter(app fiber.Router, service levels.Service) {
 	app.Post("/levels", handlers.AddLevel(service))
 	app.Post("/levels/image", handlers.UploadLevelImage(service))
 	app.Get("/levels", handlers.GetLevels(service))
+	app.Delete("/levels/:id", handlers.DeleteLevels(service))
 }

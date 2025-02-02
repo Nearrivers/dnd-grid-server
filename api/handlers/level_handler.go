@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/Nearrivers/dnd-grid-server/api/presenter"
 	"github.com/Nearrivers/dnd-grid-server/api/validators"
@@ -80,5 +81,26 @@ func GetLevels(service levels.Service) fiber.Handler {
 
 		c.Status(http.StatusOK)
 		return c.JSON(presenter.LevelsSuccessResponse(levels))
+	}
+}
+
+func DeleteLevels(service levels.Service) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		idParam := c.Params("id")
+
+		id, err := strconv.ParseInt(idParam, 10, 64)
+		if err != nil {
+			c.Status(http.StatusInternalServerError)
+			return c.JSON(presenter.LevelErrorResponse(err))
+		}
+
+		err = service.DeleteLevel(id)
+		if err != nil {
+			c.Status(http.StatusInternalServerError)
+			return c.JSON(presenter.LevelErrorResponse(err))
+		}
+
+		c.Status(http.StatusOK)
+		return c.JSON(presenter.EmptyLevelSucessResponse())
 	}
 }
